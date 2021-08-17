@@ -1,0 +1,38 @@
+---
+- name: playbook to install httpd
+  hosts: all
+  become: yes
+  tasks:
+    - name: install htppd
+      yum:
+        name: httpd
+        state: present
+
+
+    - name: copy index.html from source to destination
+      copy:
+         src: files/index.html
+         dest: /var/www/html
+
+    - name: start and enable the httpd service
+      service:
+            name: httpd
+            state: started
+            enabled: true
+
+
+    - name: allow httpd from firewalld public zone
+      firewalld:
+          zone: public
+          service: http
+          permanent: yes
+          state: enabled
+
+
+    - name: reload the firewalld service
+      service:
+             name: firewalld
+             state: reloaded
+             
+...
+

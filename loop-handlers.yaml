@@ -1,0 +1,37 @@
+---
+- name: mariadb server is running
+  hosts: all
+  become: yes
+  remote_user: ovi
+  vars:
+     mariadb_packages:
+            - mariadb-server
+            - net-tools
+
+
+  tasks:
+     - name: Mariadb packages are installed
+       yum:
+          name: "{{ item }}"
+          state: present
+       loop: "{{ mariadb_packages }}"
+
+    
+     - name: httpd installed
+       yum:
+         name: httpd
+         state: latest
+       notify:
+          - restart mariadb
+
+  handlers:
+     - name: restart mariadb
+       service:
+            name: mariadb
+            state: restarted
+            enabled: true
+
+
+...
+
+

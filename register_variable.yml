@@ -1,0 +1,19 @@
+---
+- name: ansible register variable
+  hosts: all
+  remote_user: ovi
+  become: true
+
+  tasks:
+     - name: install apache here
+       yum:
+         name: httpd
+         state: present
+       register: test_pkg_install
+
+     - name: print register variable
+       debug:
+           msg: "{{ ansible_facts['devices']['sda']['partitions']}}"
+
+
+...

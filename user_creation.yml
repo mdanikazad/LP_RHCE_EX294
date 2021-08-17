@@ -1,0 +1,16 @@
+---
+- name: user creation from ansible vault secret file
+  hosts: all
+  remote_user: ovi
+  become: true
+  vars_files:
+          - secret.yml
+
+  tasks:
+     - name: create user with hashed password
+       user:
+          name: "{{ username }}"
+          password: "{{ pwhash  }}"
+
+
+...

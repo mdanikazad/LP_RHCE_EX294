@@ -1,0 +1,47 @@
+---
+- name: Install the apache httpd Service
+  hosts: all
+  become: yes
+  vars:
+     web_pkg: httpd
+     firewall_pkg: firewalld
+     web_service: httpd
+     firewall_service: httpd
+
+  tasks:
+      - name: install latest packages
+        yum:
+           name:
+             - "{{ web_pkg }}"
+             - "{{ firewall_pkg }}"
+           state: latest
+
+
+      - name: The {{ web_service }} start and enable
+        service:
+             name: "{{ web_service  }}"
+             state: started
+             enabled: true
+
+      - name: The {{ firewall_service }} start and enable
+        service: 
+            name: "{{ firewall_service }}"
+            state: started
+            enabled: true
+
+
+      - name: write content to remote servers
+        copy:
+          content: 'Welcome to OUR official WEBSITE'
+          dest: /var/www/html/index.html
+
+
+      - name: Allow http port from the firewalld service
+        firewalld:
+               service: http
+               zone: public
+               permanent: yes
+               state: enabled
+               immediate: yes
+
+...
